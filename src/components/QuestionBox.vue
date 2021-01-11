@@ -18,7 +18,9 @@
       {{ answer }}</b-list-group-item>
     </b-list-group>
 
-    <b-button 
+    <div>
+    <b-button
+      v-if="totalQuestion < 10" 
       variant="primary"
       @click="submitAnswer"
       :disabled="selectedIndex === null || answered"
@@ -26,10 +28,15 @@
       Submit
       </b-button>
     <b-button 
+    v-if="totalQuestion < 10" 
     @click.prevent="next" 
     variant="success" 
     :disabled="answered === false"
     >Next</b-button>
+
+    <b-button variant="success" v-if="totalQuestion === 10" @click="restartQuiz">Retake quiz</b-button>
+  </div>
+
   </b-jumbotron>
 </div>
 </template>
@@ -41,7 +48,9 @@ export default {
   props:{
     currentQuestion: Object,
     next: Function,
-    increment: Function
+    increment: Function,
+    totalQuestion: Number,
+    restartQuiz: Function
   },
   data(){
     return {
@@ -56,6 +65,8 @@ export default {
       let answers = [...this.currentQuestion.incorrect_answers]
       answers.push(this.currentQuestion.correct_answer)
       console.log(this.currentQuestion.correct_answer)
+      console.log(answers)
+      answers = _.shuffle([...answers])
       console.log(answers)
       return answers
     }
@@ -86,7 +97,8 @@ export default {
     },
     shuffleAnswers(){
       let answers = [...this.currentQuestion.incorrect_answers, this.currentQuestion.correct_answer]
-      this.shuffledAnswers = _.shuffle(answers)
+      this.shuffledAnswers = _.shuffle(answers) 
+      console.log(this.shuffledAnswers)
       this.correctIndex = this.answers.indexOf(this.currentQuestion.correct_answer)
     },
     answerClass(index){

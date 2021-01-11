@@ -11,7 +11,9 @@
           v-if="questions.length"
           :currentQuestion ="questions[index]"
           :next ="next"
+          :restartQuiz="restartQuiz"
           :increment ="increment"
+          :totalQuestion="numbTotal"
           />
         </b-col>
       </b-row>
@@ -48,10 +50,15 @@ export default {
         this.numbCorrect++
       }
       this.numbTotal++
-    }
-  },
-  mounted: function() {
-    fetch('https://opentdb.com/api.php?amount=10&category=27&type=multiple', {
+    },
+    restartQuiz(){
+      this.fetcher()
+      this.index = 0
+      this.numbCorrect = 0
+      this.numbTotal = 0
+    },
+    fetcher(){
+      fetch('https://opentdb.com/api.php?amount=10&category=27&type=multiple', {
       method:'get'
     })
     .then((response)=>{
@@ -60,7 +67,11 @@ export default {
     .then((jsonData) =>{
       this.questions = jsonData.results
     })
-  }
+    }
+  },
+  mounted: function() {
+    this.fetcher()
+}
 }
 </script>
 
